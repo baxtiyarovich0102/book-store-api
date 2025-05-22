@@ -20,13 +20,27 @@ type AuthPayload {
   user: UserModel!
 }
 
+type Book {
+  id: Int!
+  title: String!
+  author: String!
+  description: String!
+  price: Float!
+  created_at: DateTime!
+}
+
 type Query {
   user(id: Int!): UserModel!
+  books: [Book!]!
+  book(id: Int!): Book!
 }
 
 type Mutation {
   register(input: RegisterInput!): UserModel!
   login(input: LoginInput!): AuthPayload!
+  createBook(input: CreateBookInput!): Book!
+  updateBook(id: Int!, input: UpdateBookInput!): Book!
+  deleteBook(id: Int!): Book!
 }
 
 input RegisterInput {
@@ -38,4 +52,19 @@ input RegisterInput {
 input LoginInput {
   email: String!
   password: String!
+}
+
+input CreateBookInput {
+  title: String!
+  author: String!
+  description: String!
+  price: Float!
+}
+
+input UpdateBookInput {
+  title: String
+  author: String
+  description: String
+  price: Float
+  id: Int!
 }

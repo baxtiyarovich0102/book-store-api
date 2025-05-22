@@ -9,6 +9,7 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { User } from './user/entities/user.entity';
+import { BookModule } from './book/book.module';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { User } from './user/entities/user.entity';
       password: '931646479q',
       database: 'bookstoredb',
       synchronize: true,
-      entities: [User],
+      entities: [__dirname + '/**/*.entity.{ts,js}'],
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
@@ -29,7 +30,8 @@ import { User } from './user/entities/user.entity';
       context: ({ req }) => ({ req }),
     }),
     AuthModule,
-     UserModule],
+     UserModule,
+     BookModule],
   controllers: [AppController],
   providers: [AppService],
 })
