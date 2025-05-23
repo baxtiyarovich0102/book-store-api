@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Book } from './entities/book.entity';
@@ -26,14 +30,19 @@ export class BookService {
     return book;
   }
 
-  async update(id: number, input: UpdateBookInput): Promise<Book> {
+  async update(id: number, input: UpdateBookInput, user: any): Promise<Book> {
+    
+    if (!user || user.role !== 'ADMIN')
+      throw new UnauthorizedException('Only admins can update books');
     const book = await this.bookRepo.findOneBy({ id });
     if (!book) throw new NotFoundException('Book not found');
     Object.assign(book, input);
     return this.bookRepo.save(book);
   }
 
-  async remove(id: number): Promise<Book> {
+  async remove(id: number, user: any): Promise<Book> {
+    if (!user || user.role !== 'ADMIN')
+      throw new UnauthorizedException('Only admins can delete books');
     const book = await this.findOne(id);
     return this.bookRepo.remove(book);
   }

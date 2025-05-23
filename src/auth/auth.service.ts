@@ -32,7 +32,8 @@ export class AuthService {
       password: hashedPassword,
       role: 'USER',
     });
-
+    console.log(user);
+    
     return await this.userRepository.save(user);
   }
 
@@ -43,10 +44,16 @@ export class AuthService {
       throw new Error('User not found');
     }
 
-    const isPasswordValid = await bcrypt.compare(input.password, user.password);
-    if (!isPasswordValid) throw new Error('Invalid password');
+    if(user.role != "ADMIN"){
+      const isPasswordValid = await bcrypt.compare(input.password, user.password)
+      if (!isPasswordValid) throw new Error('Invalid password');}
 
-    const token = this.jwtService.sign({ userId: user.id, role: user.role });
+      if(user.role == "ADMIN"){
+        if(user.password != input.password) throw new Error("Invalid password")
+      }
+    console.log(user);
+    
+    const token = this.jwtService.sign({ id: user.id, role: user.role });
     return { token, user };
   }
 

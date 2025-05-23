@@ -3,6 +3,9 @@ import { BookService } from './book.service';
 import { Book } from './entities/book.entity';
 import { CreateBookInput } from './dto/create-book.input';
 import { UpdateBookInput } from './dto/update-book.input';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from 'src/guards/gql-auth.guard';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
 
 @Resolver(() => Book)
 export class BookResolver {
@@ -23,16 +26,20 @@ export class BookResolver {
     return this.bookService.create(input);
   }
 
-  @Mutation(() => Book)
+  @Mutation(() => Book, {name: "updateBook"})
+  @UseGuards(GqlAuthGuard)
   updateBook(
     @Args('id', { type: () => Int }) id: number,
     @Args('input') input: UpdateBookInput,
+    @CurrentUser() user: any,
   ) {
-    return this.bookService.update(id, input);
+        
+    return this.bookService.update(id, input, user);
   }
 
   @Mutation(() => Book)
-  deleteBook(@Args('id', { type: () => Int }) id: number) {
-    return this.bookService.remove(id);
+  @UseGuards(GqlAuthGuard)
+  deleteBook(@Args('id', { type: () => Int }) id: number, @CurrentUser() user:any) {
+    return this.bookService.remove(id, user);
   }
 }

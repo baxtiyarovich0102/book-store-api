@@ -15,10 +15,10 @@ import { BookModule } from './book/book.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
      TypeOrmModule.forRoot({
-      type: 'postgres',
+      type: 'mysql',
       host: 'localhost',
-      port: 5432,
-      username: 'postgres',
+      port: 3306,
+      username: 'root',
       password: '931646479q',
       database: 'bookstoredb',
       synchronize: true,
